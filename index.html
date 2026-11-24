@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slop detector: find filler, hype and dashes in your draft</title>
+<meta name="description" content="Paste a draft. See the filler phrases, hype words, unsupported claims and em dashes an editor would flag.">
+<link rel="stylesheet" href="style.css"><style>#out{white-space:pre-wrap;line-height:1.7;min-height:120px}mark{cursor:help}.score{font-size:40px;font-weight:700}</style></head><body><div class="wrap">
+<header class="top"><h1>Slop detector 🧽</h1><a href="https://github.com/tiwalade-joanna-okedara/slop-detector">GitHub</a></header>
+<p class="tag">Paste a draft. It flags what I'd flag as an editor: filler, hype words, claims with no source, and em dashes. Everything runs in your browser.</p>
+<div class="card"><label for="t">Your draft</label><textarea id="t" rows="9">In today's fast-paced world, businesses need to leverage cutting-edge tools to unlock their potential — and studies show 73% of teams agree. It's worth noting that our seamless platform is truly a game-changer.</textarea></div>
+<div class="card row"><div style="flex:0 0 auto"><div class="muted">Clean score</div><div class="score" id="sc">-</div></div><div><div class="muted">Flags</div><div id="sum"></div></div></div>
+<div class="card"><div id="out"></div><p class="muted">Hover a highlight for the fix.</p></div>
+<div class="card"><h3>The checklist I edit with</h3><ol><li>Can a reader repeat the main point in one sentence?</li><li>Does every number have a source next to it?</li><li>Would you say each sentence out loud to a client?</li><li>Is there a specific example, not just a claim?</li><li>Did you cut the opening line and the recap at the end?</li></ol></div>
+<footer>Made by <a href="https://github.com/tiwalade-joanna-okedara">Tiwalade Joanna Okedara-Kalu</a> · MIT licence</footer>
+</div><script src="slop.js"></script><script>
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function run(){const t=document.getElementById('t').value,r=scanSlop(t);let h='',i=0;
+ for(const x of r.hits){h+=esc(t.slice(i,x.start))+`<mark class="${x.cls}" title="${esc(x.label+': '+x.tip)}">${esc(x.match)}</mark>`;i=x.end;}h+=esc(t.slice(i));
+ document.getElementById('out').innerHTML=h;document.getElementById('sc').textContent=r.score;
+ const c={};r.hits.forEach(x=>c[x.label]=(c[x.label]||0)+1);
+ document.getElementById('sum').innerHTML=Object.keys(c).length?Object.entries(c).map(([k,v])=>`<span class="pill warn">${k}: ${v}</span>`).join(' '):'<span class="pill good">Nothing flagged</span>';}
+document.getElementById('t').addEventListener('input',run);run();
+</script></body></html>
